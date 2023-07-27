@@ -33,6 +33,7 @@ runs:
   steps:
       # Prepare workspace
       - name: work around permission issue
+        shell: sh
         run: >
           sudo chown -R $USER:$USER /__w &&
           git config --global --add safe.directory $GITHUB_WORKSPACE &&
@@ -42,6 +43,7 @@ runs:
 
       # Find + delete index.lock files
       - name: lock file cleanup
+        shell: sh
         run: find . -name '*.lock' -delete
 
       # Checkout repository
