@@ -1,0 +1,80 @@
+name: 'ACE Checkout'
+author: 'Guillem Torrente (tmguillem)'
+description: 'Github action that checkout git repository.'
+
+branding:
+  icon: 'activity'
+  color: orange
+
+inputs:
+  set-safe-directory:
+    description: 'Add repository path as safe.directory for Git global config'
+    required: false
+    default: true
+    type: boolean
+  lfs:
+    description: 'Whether to download Git-LFS files'
+    required: false
+    default: false
+    type: boolean
+  submodules:
+    description: 'Whether to checkout submodules: `true` to checkout submodules or `recursive` to recursively checkout submodules'
+    required: false
+    default: false
+    type: string
+  token:
+    description: 'Personal access token (PAT) used to fetch the repository'
+    required: false
+    default: ${{ github.token }}
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+      # Prepare workspace
+      - name: work around permission issue
+        run: >
+          sudo chown -R $USER:$USER /__w &&
+          git config --global --add safe.directory $GITHUB_WORKSPACE &&
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
+          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
+          find .gitmodules -delete || true
+
+      # Find + delete index.lock files
+      - name: lock file cleanup
+        run: find . -name '*.lock' -delete
+
+      # Checkout repository
+      - name: checkout repository (trial 1)
+        id: checkout_1
+        continue-on-error: true
+        uses: actions/checkout@v3.1.0
+        with:
+          set-safe-directory: ${{ inputs.set-safe-directory }}
+          lfs: ${{ inputs.lfs }}
+          submodules: ${{ inputs.submodules }}
+          token: ${{ inputs.token }}
+
+      # Checkout repository
+      - name: checkout repository (trial 2)
+        id: checkout_2
+        if: steps.checkout_1.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/checkout@v3.1.0
+        with:
+          set-safe-directory: ${{ inputs.set-safe-directory }}
+          lfs: ${{ inputs.lfs }}
+          submodules: ${{ inputs.submodules }}
+          token: ${{ inputs.token }}
+
+      # Checkout repository
+      - name: checkout repository (trial 3)
+        id: checkout_3
+        if: steps.checkout_2.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/checkout@v3.1.0
+        with:
+          set-safe-directory: ${{ inputs.set-safe-directory }}
+          lfs: ${{ inputs.lfs }}
+          submodules: ${{ inputs.submodules }}
+          token: ${{ inputs.token }}
