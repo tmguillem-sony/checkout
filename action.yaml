@@ -31,20 +31,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
-      # Prepare workspace
-      - name: work around permission issue
+      # Work around permission issue and find + delete index.lock files
+      - name: Prepare workspace (trial 1)
         shell: sh
         run: >
           sudo chown -R $USER:$USER /__w &&
           git config --global --add safe.directory $GITHUB_WORKSPACE &&
           git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
           git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete || true
-
-      # Find + delete index.lock files
-      - name: lock file cleanup
-        shell: sh
-        run: find . -name '*.lock' -delete
+          find .gitmodules -delete || true &&
+          find . -name '*.lock' -delete
 
       # Checkout repository
       - name: checkout repository (trial 1)
@@ -57,7 +53,17 @@ runs:
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
-      # Checkout repository
+      - name: Prepare workspace (trial 2)
+        if: steps.checkout_1.outcome == 'failure'
+        shell: sh
+        run: >
+          sudo chown -R $USER:$USER /__w &&
+          git config --global --add safe.directory $GITHUB_WORKSPACE &&
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
+          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
+          find .gitmodules -delete || true &&
+          find . -name '*.lock' -delete
+
       - name: checkout repository (trial 2)
         id: checkout_2
         if: steps.checkout_1.outcome == 'failure'
@@ -69,7 +75,17 @@ runs:
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
-      # Checkout repository
+      - name: Prepare workspace (trial 2)
+        if: steps.checkout_2.outcome == 'failure'
+        shell: sh
+        run: >
+          sudo chown -R $USER:$USER /__w &&
+          git config --global --add safe.directory $GITHUB_WORKSPACE &&
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
+          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
+          find .gitmodules -delete || true &&
+          find . -name '*.lock' -delete
+          
       - name: checkout repository (trial 3)
         id: checkout_3
         if: steps.checkout_2.outcome == 'failure'
