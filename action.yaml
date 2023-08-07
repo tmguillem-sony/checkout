@@ -39,8 +39,8 @@ runs:
           git config --global --add safe.directory $GITHUB_WORKSPACE &&
           git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
           git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete || true &&
-          find . -name '*.lock' -delete
+          find .gitmodules -delete &&
+          find . -name '*.lock' -delete || true
 
       # Checkout repository
       - name: checkout repository (trial 1)
@@ -61,8 +61,8 @@ runs:
           git config --global --add safe.directory $GITHUB_WORKSPACE &&
           git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
           git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete || true &&
-          find . -name '*.lock' -delete
+          find .gitmodules -delete &&
+          find . -name '*.lock' -delete || true
 
       - name: checkout repository (trial 2)
         id: checkout_2
@@ -75,7 +75,7 @@ runs:
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
-      - name: Prepare workspace (trial 2)
+      - name: Prepare workspace (trial 3)
         if: steps.checkout_2.outcome == 'failure'
         shell: sh
         run: >
@@ -83,8 +83,8 @@ runs:
           git config --global --add safe.directory $GITHUB_WORKSPACE &&
           git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
           git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete || true &&
-          find . -name '*.lock' -delete
+          find .gitmodules -delete &&
+          find . -name '*.lock' -delete || true
           
       - name: checkout repository (trial 3)
         id: checkout_3
