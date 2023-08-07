@@ -54,6 +54,7 @@ runs:
           token: ${{ inputs.token }}
 
       - name: Prepare workspace (trial 2)
+        if: steps.checkout_1.outcome == 'failure'
         shell: sh
         run: |
           chown -R $USER:$USER /__w || true
@@ -75,6 +76,7 @@ runs:
           token: ${{ inputs.token }}
 
       - name: Prepare workspace (trial 3)
+        if: steps.checkout_2.outcome == 'failure'
         shell: sh
         run: |
           chown -R $USER:$USER /__w || true
