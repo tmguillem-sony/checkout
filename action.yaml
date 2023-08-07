@@ -34,12 +34,12 @@ runs:
       # Work around permission issue and find + delete index.lock files
       - name: Prepare workspace (trial 1)
         shell: sh
-        run: >
-          sudo chown -R $USER:$USER /__w &&
-          git config --global --add safe.directory $GITHUB_WORKSPACE &&
-          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
-          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete &&
+        run: |
+          sudo chown -R $USER:$USER /__w || true
+          git config --global --add safe.directory $GITHUB_WORKSPACE || true
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" || true
+          git config --system filter.lfs.process "git-lfs filter-process --skip" || true
+          find .gitmodules -delete || true
           find . -name '*.lock' -delete || true
 
       # Checkout repository
@@ -55,12 +55,12 @@ runs:
 
       - name: Prepare workspace (trial 2)
         shell: sh
-        run: >
-          sudo chown -R $USER:$USER /__w &&
-          git config --global --add safe.directory $GITHUB_WORKSPACE &&
-          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
-          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete &&
+        run: |
+          sudo chown -R $USER:$USER /__w || true
+          git config --global --add safe.directory $GITHUB_WORKSPACE || true
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" || true
+          git config --system filter.lfs.process "git-lfs filter-process --skip" || true
+          find .gitmodules -delete || true
           find . -name '*.lock' -delete || true
 
       - name: checkout repository (trial 2)
@@ -76,12 +76,12 @@ runs:
 
       - name: Prepare workspace (trial 3)
         shell: sh
-        run: >
-          sudo chown -R $USER:$USER /__w &&
-          git config --global --add safe.directory $GITHUB_WORKSPACE &&
-          git config --system filter.lfs.smudge "git-lfs smudge --skip" &&
-          git config --system filter.lfs.process "git-lfs filter-process --skip" &&
-          find .gitmodules -delete &&
+        run: |
+          sudo chown -R $USER:$USER /__w || true
+          git config --global --add safe.directory $GITHUB_WORKSPACE || true
+          git config --system filter.lfs.smudge "git-lfs smudge --skip" || true
+          git config --system filter.lfs.process "git-lfs filter-process --skip" || true
+          find .gitmodules -delete || true
           find . -name '*.lock' -delete || true
           
       - name: checkout repository (trial 3)
