@@ -49,7 +49,7 @@ runs:
         uses: actions/checkout@v3.1.0
         with:
           set-safe-directory: ${{ fromJSON(inputs.set-safe-directory) }}
-          lfs: false # ${{ fromJSON(inputs.lfs) }}
+          lfs: ${{ fromJSON(inputs.lfs) }}
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
@@ -71,7 +71,7 @@ runs:
         uses: actions/checkout@v3.1.0
         with:
           set-safe-directory: ${{ fromJSON(inputs.set-safe-directory) }}
-          lfs: false # ${{ fromJSON(inputs.lfs) }}
+          lfs: ${{ fromJSON(inputs.lfs) }}
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
@@ -93,7 +93,7 @@ runs:
         uses: actions/checkout@v3.1.0
         with:
           set-safe-directory: ${{ fromJSON(inputs.set-safe-directory) }}
-          lfs: false # ${{ fromJSON(inputs.lfs) }}
+          lfs: ${{ fromJSON(inputs.lfs) }}
           submodules: ${{ inputs.submodules }}
           token: ${{ inputs.token }}
 
